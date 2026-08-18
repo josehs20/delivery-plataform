@@ -1,0 +1,15 @@
+---
+description: "Apply Laravel synchronization and offline command ingestion rules when implementing sync endpoints, idempotency, event reconciliation, or mobile offline support."
+---
+
+# Offline Synchronization Rules
+
+- The server is the source of truth after synchronization.
+- Client offline events MUST carry a stable event/idempotency identifier.
+- Duplicate sync submissions MUST be safely recognized and not produce duplicate state transitions or financial effects.
+- Validate authorization and current authoritative state when applying each offline command.
+- Do not blindly trust a stale client state.
+- Define conflict behavior per operation; do not silently last-write-wins critical delivery or financial fields.
+- Media uploads should be resumable/retriable and associated with a client-created identifier where required.
+- Synchronization responses should identify accepted, rejected, duplicated, and conflict outcomes.
+- Synchronization failures MUST be diagnosable without exposing secrets.

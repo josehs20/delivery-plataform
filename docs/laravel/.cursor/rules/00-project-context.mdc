@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+
+# Laravel Project Context and Source of Truth
+
+## Mandatory context
+- Treat `/docs/**` as the canonical product and business source of truth.
+- Treat `/laravel/docs/**` as the canonical Laravel technical specification.
+- Read the relevant shared and Laravel documents before implementing a feature.
+- Do not silently invent business rules, financial behavior, delivery states, or permissions.
+- When a requirement is explicitly marked pending, do not implement a definitive behavior unless the user approves it.
+
+## Architecture boundary
+- Laravel is the authoritative backend for authentication, authorization, delivery state, pricing, negotiation, payment, commission, refund, payout, audit, and synchronization acceptance.
+- Flutter is a client, not a source of truth.
+- All critical client-supplied values MUST be validated on the server.
+
+## Core domain
+- Business, Driver, Vehicle, Delivery, DeliveryItem, Offer, CounterOffer, Payment, Commission, Refund, Payout, DeliveryEvent, DriverLocation, ProofOfDelivery, SyncEvent, Notification are domain concepts documented elsewhere.
+- A Driver may have multiple active deliveries.
+- A delivery still has exactly one authoritative state machine even when a driver has multiple deliveries.
+
+## Non-negotiable rules
+- Preserve auditability.
+- Preserve idempotency for retryable critical operations.
+- Protect concurrent delivery acceptance and financial operations with transactional consistency.
+- Never derive historical financial truth from current configuration.
+- Do not move backend business rules into controllers, jobs, listeners, or API resources when they belong to application/domain services.

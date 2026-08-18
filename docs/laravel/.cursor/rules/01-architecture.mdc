@@ -1,0 +1,27 @@
+---
+description: "Use the Laravel layered architecture rules when creating or modifying application services, controllers, domain logic, repositories, jobs, events, policies, models, or integrations."
+---
+
+# Laravel Architecture Rules
+
+## Required layering
+Use clear responsibilities:
+- HTTP layer: routes, controllers, requests, resources.
+- Application layer: use cases/application services orchestrating workflows.
+- Domain layer: invariants, state transitions, domain policies, value objects, domain services when justified.
+- Infrastructure layer: persistence, external APIs, queues, storage, notifications, maps, payment providers.
+
+## Rules
+- Controllers MUST remain thin and orchestrate through application services/use cases.
+- Form Requests MUST handle transport-level validation, while domain/application services MUST enforce business invariants.
+- Eloquent models MUST not become the sole location for large workflows.
+- External providers MUST be hidden behind interfaces/adapters.
+- Payment, mapping, routing, geocoding, push, storage, and other external integrations MUST be replaceable through interfaces where practical.
+- Domain code MUST not depend directly on HTTP request objects.
+- Repositories are justified for meaningful abstraction; do not create empty CRUD wrappers without value.
+- Use dependency injection through constructors and Laravel's container.
+- Keep classes cohesive and small enough to reason about.
+- Prefer explicit application commands/use cases for critical state transitions.
+
+## Feature boundaries
+Group code by domain responsibility when the project structure supports it. Do not scatter delivery logic across unrelated modules.

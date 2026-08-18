@@ -1,0 +1,15 @@
+---
+globs: "**/*Location*.php,**/*Map*.php,**/*Route*.php,**/config/*map*.php,**/app/Services/Location/**/*.php"
+alwaysApply: false
+---
+
+# Location, Maps, and Tracking
+
+- Use provider abstractions for geocoding, routing, mapping, and tracking-related external services.
+- Latitude/longitude are first-class delivery location data and must be validated for valid ranges.
+- Driver tracking is operationally scoped to active delivery context according to product rules.
+- Never expose unnecessary historical driver-location data.
+- Store timestamps with every authoritative location event.
+- Treat GPS as an input with uncertainty; do not assume every coordinate is exact.
+- Provider API keys MUST remain server-side when the architecture requires it; mobile-public keys must use provider restrictions and documented configuration.
+- Route calculations should not be embedded in unrelated domain classes.

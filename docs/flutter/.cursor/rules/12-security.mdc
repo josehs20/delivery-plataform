@@ -1,0 +1,15 @@
+---
+description: "Apply Flutter security and privacy rules for credentials, local storage, network configuration, personal data, location, screenshots/logs, and mobile hardening."
+---
+
+# Flutter Security Rules
+
+- Never hardcode secrets, private API keys, payment credentials, or admin credentials in the app.
+- Store authentication tokens using the documented secure storage mechanism.
+- Never log tokens, passwords, sensitive personal data, or payment data.
+- Do not store unnecessary personal/location data locally.
+- Enforce server authorization; client-side permission checks are UX only.
+- Use secure transport (HTTPS/TLS) in non-development environments.
+- Validate deep links/navigation inputs where external input can reach sensitive screens.
+- Treat uploaded photos and proof-of-delivery media as sensitive operational data.
+- Follow documented retention/deletion requirements and privacy UX.

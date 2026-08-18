@@ -1,0 +1,15 @@
+---
+globs: "**/test/**/*.dart,**/*_test.dart"
+alwaysApply: false
+---
+
+# Flutter Testing Rules
+
+- Every critical user workflow must have automated coverage at the appropriate level.
+- Unit-test state/application logic and sync conflict logic.
+- Widget-test important screens and state transitions.
+- Integration-test authentication, delivery lifecycle, offline persistence, synchronization, location permissions, and proof-of-delivery workflows where feasible.
+- Test duplicate sync events and app restart during pending synchronization.
+- Test authorization-driven UI behavior but do not treat UI tests as server authorization validation.
+- Use fakes/mocks for remote providers and map/payment/notification services.
+- Add regression tests for every production bug in critical paths.

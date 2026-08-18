@@ -1,0 +1,15 @@
+---
+globs: "**/lib/**/data/local/**/*.dart,**/lib/**/database/**/*.dart,**/lib/**/storage/**/*.dart"
+alwaysApply: false
+---
+
+# Local Database Rules
+
+- Use the local database defined by Flutter technical documentation for offline-first behavior.
+- Local storage must have explicit schemas/migrations and versioning.
+- Distinguish cached server state from local pending commands/events.
+- Store stable IDs needed to reconcile data after reconnect.
+- Persist pending critical actions before treating them as recorded offline.
+- Avoid storing secrets in plain local database fields; use secure storage for credentials/tokens as documented.
+- Design indexes for local lookup of active deliveries, sync queue, and recent events.
+- Never use local data as final financial authority.

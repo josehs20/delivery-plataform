@@ -1,0 +1,41 @@
+---
+description: "Apply delivery-domain invariants, state-machine, offer, counter-offer, cancellation, return, proof-of-delivery, and multi-delivery rules when changing Laravel business logic."
+---
+
+# Laravel Domain Rules
+
+## Delivery state machine
+- Every delivery state transition MUST be explicitly validated.
+- Never assign arbitrary status strings from controllers or clients.
+- Persist transition history as delivery events/audit records.
+- A transition MUST validate actor, current state, preconditions, and side effects.
+
+## Acceptance and concurrency
+- A delivery can be accepted by only one winning driver.
+- Multiple requests attempting acceptance MUST be safely serialized or rejected by transactional controls.
+- Do not rely on a frontend button disable to prevent double assignment.
+
+## Offers and counter-offers
+- An offer is a first-class concept with status and timestamps.
+- Counter-offers are first-class records and retain their history.
+- Counter-offers become available only after the configured acceptance window expires without assignment.
+- A driver may submit another counter-offer after rejection while negotiation remains open.
+- Once one offer/counter-offer is accepted, competing proposals MUST be closed according to documented rules.
+
+## Multi-delivery driver behavior
+- A driver may have multiple active deliveries.
+- Never assume one driver equals one active delivery.
+- Do not implement automatic route optimization in MVP unless explicitly requested.
+
+## Cancellation, failure, return
+- Cancellation permissions are state-dependent.
+- If cancellation occurs after pickup and return is required, the delivery must follow the return flow and business confirmation.
+- Delivery failure requires a standardized reason and appropriate evidence according to the business rules.
+
+## Proof of delivery
+- Delivery completion requires the configured proof-of-delivery data.
+- Do not mark a delivery delivered solely from a client-provided status string.
+
+## Financial invariants
+- Final price, commission, refund, and payout values must be validated and persisted server-side.
+- Historical financial snapshots must remain immutable except for explicit audited adjustments.

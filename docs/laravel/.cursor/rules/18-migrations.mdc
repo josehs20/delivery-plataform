@@ -1,0 +1,15 @@
+---
+description: Database migration rules
+alwaysApply: true
+---
+# Migration Rules
+
+- Follow `/docs/data-model` and `/docs/database/29-migration-implementation.md`.
+- MySQL is the target database.
+- UUID is the approved primary key format.
+- Money uses decimal/numeric, never floating point.
+- Every migration MUST have a coherent `down()` method when technically possible.
+- Foreign keys MUST respect migration order.
+- Critical invariants MUST be represented by constraints/indexes where possible.
+- Do not put business workflows into migrations.
+- Never store secrets in seeders or migrations.

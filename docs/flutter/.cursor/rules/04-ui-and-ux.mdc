@@ -1,0 +1,16 @@
+---
+globs: "**/lib/**/presentation/**/*.dart,**/lib/**/ui/**/*.dart,**/lib/**/screens/**/*.dart,**/lib/**/widgets/**/*.dart"
+alwaysApply: false
+---
+
+# UI and UX Rules
+
+- Every screen must represent explicit states: loading, success, empty, error, offline, and retry where applicable.
+- Critical actions require visible confirmation/state feedback.
+- Never hide a failed synchronization or financial action behind a generic success message.
+- Clearly differentiate local/offline pending state from server-confirmed state.
+- Delivery status terminology must match the shared product documentation.
+- Monetary amounts must be formatted consistently and never rely on floating-point display for authoritative calculations.
+- Location permissions and tracking state must be communicated clearly to the user.
+- Avoid exposing another user's private data in shared UI.
+- The app should remain usable on common Android/iOS screen sizes and accessibility settings.

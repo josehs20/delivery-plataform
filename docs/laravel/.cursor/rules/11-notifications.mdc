@@ -1,0 +1,14 @@
+---
+globs: "**/app/Notifications/**/*.php,**/app/Services/Notification/**/*.php,**/app/Listeners/**/*[Nn]otification*.php"
+alwaysApply: false
+---
+
+# Notification Rules
+
+- Notifications are secondary effects; the database state is authoritative.
+- Define notification events from delivery state/offer/payment events.
+- Support push notifications for mobile clients and real-time events when connected.
+- Do not make a delivery state transition depend on notification delivery success.
+- Prevent duplicate notifications when an event is retried.
+- Do not include unnecessary sensitive data in notification payloads.
+- Keep provider integration replaceable.

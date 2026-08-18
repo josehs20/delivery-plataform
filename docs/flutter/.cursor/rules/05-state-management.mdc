@@ -1,0 +1,14 @@
+---
+globs: "**/lib/**/state/**/*.dart,**/lib/**/providers/**/*.dart,**/lib/**/controllers/**/*.dart,**/lib/**/notifiers/**/*.dart,**/lib/**/bloc/**/*.dart"
+alwaysApply: false
+---
+
+# State Management Rules
+
+- Use the state-management solution selected by `/flutter/docs/04-state-management.md`; do not introduce a competing state framework casually.
+- Separate server/domain state from transient UI state.
+- Represent loading, success, error, stale, and sync-pending states explicitly where necessary.
+- Avoid global mutable singletons for business state.
+- Do not duplicate authoritative delivery state in multiple unrelated controllers.
+- State should be derived from repository/application data whenever possible.
+- Keep side effects out of pure state/model objects.

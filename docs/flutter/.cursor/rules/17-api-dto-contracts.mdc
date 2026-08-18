@@ -1,0 +1,12 @@
+---
+description: Flutter API and DTO contract rules
+alwaysApply: true
+---
+# API and DTO Contract Rules
+
+- `/docs/openapi/openapi.yaml` is the HTTP contract.
+- DTOs MUST mirror API schemas and MUST remain separate from domain entities.
+- Repositories mediate between DTOs, local entities and domain objects.
+- The Flutter app MUST NOT become the source of truth for financial or delivery state.
+- Unknown response fields SHOULD be ignored safely where practical.
+- All commands that can be retried MUST support the server's idempotency contract.

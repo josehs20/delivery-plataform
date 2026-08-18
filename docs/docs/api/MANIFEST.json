@@ -1,0 +1,7 @@
+{
+  "version": "6.0",
+  "artifact": "api-contract",
+  "framework_backend": "Laravel",
+  "mobile": "Flutter",
+  "base_path": "/api/v1"
+}

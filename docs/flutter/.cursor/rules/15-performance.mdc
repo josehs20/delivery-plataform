@@ -1,0 +1,15 @@
+---
+globs: "**/lib/**/*.dart"
+alwaysApply: false
+---
+
+# Flutter Performance and Accessibility
+
+- Avoid unnecessary widget rebuilds and expensive work during `build()`.
+- Paginate large historical lists.
+- Avoid loading large media files into memory unnecessarily.
+- Compress/resize evidence photos according to documented quality/storage requirements before upload when safe.
+- Schedule background synchronization carefully to protect battery and data usage.
+- Avoid frequent GPS sampling unless operationally required.
+- Use accessible labels, touch targets, contrast, semantics, and scalable text.
+- Measure before introducing complex performance optimizations.

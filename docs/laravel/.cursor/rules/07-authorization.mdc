@@ -1,0 +1,14 @@
+---
+globs: "**/app/Policies/**/*.php,**/app/Http/Middleware/**/*[Aa]uthor*.php,**/app/Http/**/*.php"
+alwaysApply: false
+---
+
+# Authorization Rules
+
+- Authorization MUST be enforced server-side for every protected resource and command.
+- Roles currently include Commerce, Driver, and Administrator; finer permissions may be layered without weakening isolation.
+- A commerce user MUST only access data owned by or explicitly shared with its business scope.
+- A driver MUST only access delivery information permitted for operational execution.
+- Administrators may operate across tenants only through explicit privileged permissions.
+- Never rely on hidden UI buttons for access control.
+- Authorization MUST be checked again during offline synchronization of commands/events.

@@ -1,0 +1,25 @@
+---
+description: "Use the Flutter application architecture rules when creating screens, features, repositories, services, data sources, domain models, and navigation."
+---
+
+# Flutter Architecture Rules
+
+## Recommended layers
+Use clear separation between:
+- Presentation/UI.
+- Application/state orchestration.
+- Domain models/use-case-facing interfaces where justified.
+- Data repositories.
+- Remote data sources.
+- Local data sources.
+- Sync/offline infrastructure.
+- External integrations such as maps and notifications.
+
+## Rules
+- UI widgets MUST NOT contain API calls, SQL, or complex domain workflows.
+- Screens should communicate through state/application controllers/view models consistent with the chosen state-management approach.
+- Repositories coordinate local/remote sources and hide persistence details from the UI.
+- Remote and local data models may be distinct when necessary; do not force network DTOs to become UI state.
+- External provider SDKs should be isolated behind app services/interfaces where practical.
+- Keep navigation decisions separate from data persistence.
+- Organize features around product domains rather than generic utility folders when the feature is substantial.

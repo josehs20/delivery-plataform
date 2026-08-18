@@ -1,0 +1,27 @@
+---
+description: "Apply transaction, locking, idempotency, and concurrency rules when implementing delivery acceptance, negotiation, cancellation, completion, payments, refunds, payouts, or synchronization."
+---
+
+# Transactions and Concurrency
+
+## Critical operations
+The following require transactional integrity and explicit concurrency handling:
+- Accept delivery.
+- Accept counter-offer.
+- Assign driver.
+- Cancel delivery.
+- Confirm pickup where state effects are coupled.
+- Complete delivery.
+- Trigger or finalize refund.
+- Release payout.
+- Apply synchronization events that mutate authoritative state.
+
+## Required behavior
+- The backend MUST be the authority for the current state.
+- Use database transactions for multi-record state changes.
+- Use row-level locking, unique constraints, optimistic concurrency, or equivalent controls where appropriate.
+- An acceptance race MUST result in exactly one winning assignment.
+- Critical commands MUST be idempotent when clients may retry them.
+- Idempotency keys/events MUST be persisted when required to reject duplicates.
+- Side effects such as notifications should be emitted after the transaction is in a safe state, using queues/outbox-style patterns when appropriate.
+- Never hold long external network calls inside a database transaction unless absolutely necessary and justified.

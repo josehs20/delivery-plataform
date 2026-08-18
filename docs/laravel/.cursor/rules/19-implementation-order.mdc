@@ -1,0 +1,19 @@
+---
+description: Mandatory implementation sequencing
+alwaysApply: true
+---
+# Implementation Order
+
+When starting a feature, follow:
+1. Read product/domain requirements.
+2. Read data model.
+3. Read API contract.
+4. Update OpenAPI if the contract changes.
+5. Implement migration/model changes.
+6. Implement domain/use case.
+7. Implement DTO/request/resource.
+8. Implement controller/route.
+9. Add events/jobs where required.
+10. Add automated tests.
+
+Do not skip directly from a UI request to controller code when the domain contract is undefined.

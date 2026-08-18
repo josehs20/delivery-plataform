@@ -1,0 +1,13 @@
+---
+description: OpenAPI and DTO implementation rules for Laravel
+alwaysApply: true
+---
+# OpenAPI and DTO Rules
+
+- The OpenAPI specification under `/docs/openapi/openapi.yaml` is the HTTP contract.
+- DTOs MUST represent explicit input/output contracts and MUST NOT be Eloquent models.
+- Financial values MUST use decimal-safe representations.
+- DTOs MUST NOT accept fields that the authenticated actor is not allowed to change.
+- Any endpoint added to Laravel MUST be documented in OpenAPI before implementation is considered complete.
+- Breaking HTTP changes require a documented versioning decision.
+- Controllers MUST map HTTP input to DTOs/use cases and MUST NOT contain domain rules.

@@ -1,0 +1,15 @@
+---
+globs: "**/lib/**/api/**/*.dart,**/lib/**/remote/**/*.dart,**/lib/**/network/**/*.dart,**/lib/**/services/**/*api*.dart"
+alwaysApply: false
+---
+
+# Flutter API Client Rules
+
+- API contracts come from `/laravel/docs/api.md` and shared use cases.
+- Use typed request/response models for non-trivial endpoints.
+- Centralize authentication headers, base URL, timeout, serialization, and common error mapping.
+- Never trust server response data without parsing/validation.
+- Never send authoritative financial values simply because the UI calculated them.
+- Commands that may be retried must carry the required idempotency/event identifier.
+- Handle HTTP errors, timeouts, connectivity failures, authentication expiry, and validation errors distinctly.
+- Do not mix raw HTTP calls directly into presentation widgets.

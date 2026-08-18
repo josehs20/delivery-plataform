@@ -1,0 +1,15 @@
+---
+globs: "**/lib/**/location/**/*.dart,**/lib/**/maps/**/*.dart,**/lib/**/tracking/**/*.dart,**/*map*.dart,**/*location*.dart"
+alwaysApply: false
+---
+
+# Location and Maps Rules
+
+- Use the provider abstraction selected in `/flutter/docs/09-location.md`.
+- Request location permissions explicitly and handle denied/restricted states.
+- Do not continuously track outside documented operational need.
+- Validate location samples for availability and accuracy before using them operationally.
+- Cache/map data required for active offline deliveries when the provider supports it.
+- Never expose a driver's private continuous location outside authorized delivery context.
+- Handle GPS disabled, poor accuracy, mock/stale locations, permission revocation, and battery constraints gracefully.
+- Location events must contain timestamps and be associated with the correct delivery/driver context when applicable.

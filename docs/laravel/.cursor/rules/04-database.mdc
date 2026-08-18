@@ -1,0 +1,20 @@
+---
+globs: "**/database/**/*.php,**/app/Models/**/*.php,**/app/**/Migrations/**/*.php"
+alwaysApply: false
+---
+
+# Database and Persistence Rules
+
+- MySQL is the primary relational database defined for the platform.
+- Migrations MUST be deterministic, reviewable, and reversible where practical.
+- Use foreign keys and database constraints for critical integrity.
+- Use appropriate indexes for status, ownership, proximity/tracking lookup, negotiation, and audit queries.
+- Preserve historical financial values on the transaction record; never recompute old transactions from current configuration.
+- Use UTC timestamps in persistence unless project infrastructure explicitly standardizes another storage rule.
+- Use decimal/numeric-safe representations for money; never use floating point for monetary persistence.
+- Avoid nullable columns when the domain requires a value; document legitimate null semantics.
+- Add unique constraints for identifiers and idempotency keys that must be unique.
+- Model one-to-many concepts such as DeliveryItems, Offers, CounterOffers, DeliveryEvents, DriverLocations, and attachments explicitly.
+- Do not delete audit/financial history through cascading deletes.
+- Use soft deletion only where the domain explicitly needs logical deletion.
+- Database structure must support multiple active deliveries per driver.

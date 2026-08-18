@@ -1,0 +1,18 @@
+---
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Laravel and PHP Coding Conventions
+
+- Follow PSR-12 and the project's configured formatter/linter.
+- Use strict typing where compatible with the codebase: `declare(strict_types=1);` for new PHP files unless the existing project standard forbids it.
+- Use descriptive class, method, variable, and DTO names.
+- Avoid hidden side effects in accessors and generic helper classes.
+- Prefer typed properties, return types, enums/value objects where they improve domain safety.
+- Avoid magic strings for delivery states, payment states, event types, and roles; centralize them in enums/constants/value objects.
+- Prefer immutable DTO/value objects for command inputs where appropriate.
+- Do not expose Eloquent models directly when an API resource/DTO is required by the documented contract.
+- Do not place SQL-heavy business decisions in controllers.
+- Keep methods focused; refactor large methods into named application/domain operations.
+- Add automated tests for behavior, not implementation details.

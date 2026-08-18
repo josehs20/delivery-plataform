@@ -1,0 +1,15 @@
+---
+globs: "**/app/Events/**/*.php,**/app/Listeners/**/*.php,**/app/Jobs/**/*.php,**/routes/console.php,**/app/Console/**/*.php"
+alwaysApply: false
+---
+
+# Events, Jobs, and Queues
+
+- Use domain/application events to decouple secondary effects from core state changes.
+- Use queues for non-critical asynchronous work such as notifications, media processing, webhook handling, provider calls, and synchronization jobs where documented.
+- Core authoritative state must be committed before asynchronous side effects rely on it.
+- Jobs MUST be retry-safe.
+- Jobs that can be duplicated MUST be idempotent.
+- Configure retry/backoff intentionally; do not rely on unbounded retries.
+- Failed jobs must be observable and recoverable.
+- Do not put user-facing business decisions exclusively inside an async job if the command needs an immediate authoritative response.

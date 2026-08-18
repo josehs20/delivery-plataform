@@ -1,0 +1,15 @@
+---
+globs: "**/app/Http/Middleware/**/*.php,**/app/Models/User*.php,**/routes/auth*.php,**/app/Services/Auth/**/*.php,**/config/auth.php"
+alwaysApply: false
+---
+
+# Authentication Rules
+
+- Use the authentication mechanism selected by the Laravel technical documentation; do not replace it ad hoc.
+- Passwords MUST be hashed with the framework-supported secure password hashing mechanism.
+- Tokens/sessions MUST have revocation/expiration behavior documented and tested.
+- Recovery flows MUST not disclose whether an account exists beyond the designed UX.
+- Login attempts MUST be protected by rate limiting and abuse controls.
+- Never log passwords, access tokens, refresh tokens, OTP secrets, or payment secrets.
+- Treat phone/email verification as an authentication concern separate from authorization.
+- Administrative accounts should support stronger authentication requirements when specified.

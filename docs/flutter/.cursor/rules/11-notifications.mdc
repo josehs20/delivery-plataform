@@ -1,0 +1,14 @@
+---
+globs: "**/lib/**/notifications/**/*.dart,**/lib/**/push/**/*.dart,**/*notification*.dart"
+alwaysApply: false
+---
+
+# Flutter Notification Rules
+
+- Push notifications are secondary effects; authoritative state comes from synchronized application data.
+- Handle foreground, background, and terminated-app notification states.
+- Do not use notification receipt as proof that a business event occurred.
+- Opening a notification should navigate to current synchronized state, not blindly trust embedded status.
+- Deduplicate notifications where backend retries are possible.
+- Avoid exposing sensitive personal or financial information in push payloads.
+- Request permissions according to platform requirements and user context.

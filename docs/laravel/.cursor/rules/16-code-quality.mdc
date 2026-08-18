@@ -1,0 +1,16 @@
+---
+globs: "**/*.php"
+alwaysApply: false
+---
+
+# Laravel Code Quality
+
+- Keep production code understandable before optimizing prematurely.
+- Prefer explicit naming over clever abstractions.
+- Avoid duplicated business rules.
+- Keep comments focused on decisions and invariants, not obvious syntax.
+- Add/update documentation when behavior changes.
+- Do not bypass tests to make CI green.
+- Do not weaken types or authorization merely to simplify implementation.
+- Refactor repeated patterns into well-named abstractions only after a real duplication pattern appears.
+- Every pull request should leave the codebase more consistent with the documented architecture.

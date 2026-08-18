@@ -1,0 +1,17 @@
+---
+description: "Apply Flutter synchronization engine rules for offline queues, retry, deduplication, conflict handling, attachments, and reconciliation with Laravel."
+---
+
+# Synchronization Rules
+
+- Synchronization is an explicit subsystem, not scattered `if (internet)` statements.
+- Use a durable local sync queue.
+- Queue entries must include a stable event/operation ID, entity reference, operation type, payload/version metadata, attempt count, and timestamps where required.
+- Retry transient failures with bounded backoff.
+- Do not endlessly retry permanent validation/authorization failures.
+- Handle duplicate submissions idempotently.
+- Distinguish accepted, rejected, duplicate, and conflict outcomes.
+- Conflict resolution must follow server authority for critical delivery and financial fields.
+- Media uploads need retry/resume semantics where supported.
+- Synchronization must survive app restart.
+- UI must expose meaningful sync failure/retry states.

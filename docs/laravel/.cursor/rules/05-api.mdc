@@ -1,0 +1,19 @@
+---
+globs: "**/routes/**/*.php,**/app/Http/**/*.php,**/app/Rules/**/*.php,**/app/Http/Resources/**/*.php"
+alwaysApply: false
+---
+
+# Laravel API Rules
+
+- Design APIs from documented use cases and contracts, not from database tables alone.
+- Use explicit versioning strategy (for example `/api/v1`) according to the project API document.
+- Validate every external input with Form Requests or equivalent.
+- Authorize every protected operation using policies/permissions before business execution.
+- Return stable response envelopes and error shapes defined by the API documentation.
+- Never accept client-provided final delivery status, commission, payout, refund, or authoritative price without server validation.
+- Use idempotency keys for retryable critical commands where defined.
+- Use HTTP status codes consistently.
+- Paginate list endpoints that can grow.
+- Avoid N+1 queries through deliberate loading/aggregation.
+- Do not expose internal fields, secrets, provider identifiers, or sensitive personal data unnecessarily.
+- Document new endpoints and update corresponding use cases/tests.

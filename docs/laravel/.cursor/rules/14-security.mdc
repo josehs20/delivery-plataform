@@ -1,0 +1,17 @@
+---
+description: "Apply backend security, privacy, LGPD, secret management, abuse prevention, logging, and audit rules for all Laravel work."
+---
+
+# Laravel Security Rules
+
+- Validate and authorize every request.
+- Use parameterized queries/Eloquent bindings; never build unsafe SQL from raw user input.
+- Protect against mass assignment with guarded/fillable strategy appropriate to the model.
+- Rate-limit authentication, negotiation, sync, and other abuse-prone endpoints.
+- Sanitize/validate uploaded files and control storage access.
+- Encrypt or otherwise protect sensitive data where required by policy.
+- Never commit secrets, API keys, credentials, private certificates, or production tokens.
+- Logs MUST be structured and must exclude secrets and unnecessary sensitive personal data.
+- Keep audit logs for privileged actions and critical business state changes.
+- Apply least privilege to service accounts and external integrations.
+- Respect documented LGPD data minimization, retention, access, correction, and deletion rules.

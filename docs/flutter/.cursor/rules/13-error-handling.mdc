@@ -1,0 +1,14 @@
+---
+globs: "**/*.dart"
+alwaysApply: false
+---
+
+# Flutter Error Handling Rules
+
+- Represent errors explicitly; do not swallow exceptions silently.
+- Distinguish validation errors, authorization errors, connectivity errors, sync conflicts, server errors, and unexpected failures.
+- Offline connectivity failure must not be shown as a generic permanent error when the action is designed to be queued.
+- Never show a success state when only local persistence happened unless clearly labeled as pending.
+- Log diagnostic information without sensitive data.
+- Provide retry behavior where appropriate and safe.
+- Unexpected errors should be observable through the project's monitoring strategy without leaking user data.

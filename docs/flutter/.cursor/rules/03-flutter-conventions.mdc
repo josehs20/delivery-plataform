@@ -1,0 +1,18 @@
+---
+globs: "**/*.dart"
+alwaysApply: false
+---
+
+# Flutter and Dart Conventions
+
+- Follow Dart/Flutter official style and the project's configured formatter/analyzer.
+- Prefer sound null safety and explicit types where they improve correctness.
+- Keep widgets small and composable.
+- Prefer immutable UI state objects.
+- Avoid business logic inside `build()`.
+- Dispose controllers, streams, subscriptions, and listeners correctly.
+- Avoid unnecessary rebuilds and broad state listeners.
+- Use descriptive names and feature-oriented file organization.
+- Do not place secrets in Dart source code.
+- Prefer `const` constructors/widgets where valid.
+- Keep asynchronous operations explicit and cancellation-safe where possible.

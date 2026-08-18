@@ -1,0 +1,19 @@
+---
+description: "Apply marketplace payment, commission, refund, and payout safety rules when implementing Laravel financial workflows or payment-provider integrations."
+---
+
+# Payment and Marketplace Rules
+
+- Payment provider integration MUST be abstracted behind an application interface.
+- Provider webhooks MUST be authenticated/verified according to the provider documentation.
+- Never trust client-submitted payment status.
+- Payment status changes MUST be driven by trusted backend/provider events.
+- Persist immutable transaction references and snapshots.
+- Monetary values MUST use precise decimal-safe representations.
+- Commission rules must be configuration-driven but snapshotted onto the transaction at the time of contracting.
+- Refunds MUST reference the original payment transaction.
+- Payout/release to the driver MUST require the documented delivery completion condition.
+- Webhook processing MUST be idempotent.
+- Never log card data, security codes, access tokens, or payment secrets.
+- Keep provider-specific models/adapters isolated so the provider can be replaced.
+- Financial operations must create audit events.

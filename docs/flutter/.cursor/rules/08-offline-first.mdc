@@ -1,0 +1,25 @@
+---
+description: "Apply offline-first rules for the driver app and synchronized mobile data, including local durability, offline state, and server reconciliation."
+---
+
+# Offline-First Rules
+
+## Driver app
+The driver must be able to operate an already-synchronized delivery offline for documented actions such as:
+- viewing delivery data;
+- using available location/map data;
+- recording arrival;
+- confirming pickup;
+- recording proof of delivery;
+- recording failure;
+- recording return actions when supported.
+
+## Rules
+- Persist critical offline actions locally before considering them safely recorded.
+- Each offline mutation must have a stable client event/idempotency identifier.
+- Never assume network availability.
+- Never block an active delivery workflow simply because a sync attempt failed, provided the action is allowed offline.
+- Clearly mark local pending changes.
+- Do not create a new marketplace offer while offline in MVP.
+- Do not fabricate server confirmation when only local persistence succeeded.
+- When reconnecting, synchronize safely and reconcile authoritative responses.

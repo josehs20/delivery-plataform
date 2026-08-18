@@ -1,0 +1,672 @@
+openapi: 3.0.3
+info:
+  title: Regional Delivery Platform API
+  version: 1.0.0
+  description: |
+    Contrato HTTP entre Laravel e Flutter para a plataforma de entregas.
+    O backend é a fonte de verdade para estados, preços e operações críticas.
+servers:
+  - url: /api/v1
+security:
+  - bearerAuth: []
+tags:
+  - name: Auth
+  - name: Business
+  - name: Driver
+  - name: Deliveries
+  - name: Offers
+  - name: Payments
+  - name: Location
+  - name: Sync
+  - name: Notifications
+  - name: Evidence
+  - name: Admin
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      security: []
+      summary: Authenticate user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '429':
+          $ref: '#/components/responses/RateLimited'
+  /me:
+    get:
+      tags: [Auth]
+      summary: Current authenticated user
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /deliveries:
+    post:
+      tags: [Deliveries]
+      summary: Create delivery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeliveryRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+    get:
+      tags: [Deliveries]
+      summary: List deliveries
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Status'
+      responses:
+        '200':
+          description: Delivery collection
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryCollectionResponse'
+  /deliveries/{deliveryId}:
+    get:
+      tags: [Deliveries]
+      summary: Get delivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+      responses:
+        '200':
+          description: Delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    put:
+      tags: [Deliveries]
+      summary: Update editable delivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeliveryRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /deliveries/{deliveryId}/publish:
+    post:
+      tags: [Deliveries]
+      summary: Publish delivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /deliveries/{deliveryId}/cancel:
+    post:
+      tags: [Deliveries]
+      summary: Cancel delivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelDeliveryRequest'
+      responses:
+        '200':
+          description: Cancelled or cancellation flow started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /deliveries/{deliveryId}/accept:
+    post:
+      tags: [Offers]
+      summary: Accept delivery offer
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /deliveries/{deliveryId}/counter-offers:
+    post:
+      tags: [Offers]
+      summary: Create counter offer
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CounterOfferRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterOfferResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    get:
+      tags: [Offers]
+      summary: List counter offers
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+      responses:
+        '200':
+          description: Counter offers
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterOfferCollectionResponse'
+  /counter-offers/{counterOfferId}/accept:
+    post:
+      tags: [Offers]
+      summary: Accept counter offer
+      parameters:
+        - $ref: '#/components/parameters/CounterOfferId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /counter-offers/{counterOfferId}/reject:
+    post:
+      tags: [Offers]
+      summary: Reject counter offer
+      parameters:
+        - $ref: '#/components/parameters/CounterOfferId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterOfferResponse'
+  /deliveries/{deliveryId}/arrive-pickup:
+    post:
+      tags: [Deliveries]
+      summary: Arrive at pickup
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+  /deliveries/{deliveryId}/pickup:
+    post:
+      tags: [Deliveries]
+      summary: Confirm pickup
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Picked up
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+  /deliveries/{deliveryId}/arrive-destination:
+    post:
+      tags: [Deliveries]
+      summary: Arrive at destination
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Arrived
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+  /deliveries/{deliveryId}/complete:
+    post:
+      tags: [Deliveries]
+      summary: Complete delivery
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteDeliveryRequest'
+      responses:
+        '200':
+          description: Delivered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /deliveries/{deliveryId}/fail:
+    post:
+      tags: [Deliveries]
+      summary: Register delivery failure
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FailDeliveryRequest'
+      responses:
+        '200':
+          description: Failure registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeliveryResponse'
+  /driver/location:
+    post:
+      tags: [Location]
+      summary: Send driver location
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LocationPoint'
+      responses:
+        '202':
+          description: Accepted
+  /driver/location/batch:
+    post:
+      tags: [Location]
+      summary: Send offline location batch
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [points]
+              properties:
+                points:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/LocationPoint'
+      responses:
+        '202':
+          description: Accepted
+  /sync/batch:
+    post:
+      tags: [Sync]
+      summary: Synchronize offline operations
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncBatchRequest'
+      responses:
+        '200':
+          description: Synchronization result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncBatchResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /deliveries/{deliveryId}/evidence:
+    post:
+      tags: [Evidence]
+      summary: Attach evidence
+      parameters:
+        - $ref: '#/components/parameters/DeliveryId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EvidenceRequest'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvidenceResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  parameters:
+    DeliveryId:
+      name: deliveryId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    CounterOfferId:
+      name: counterOfferId
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema: { type: string, minLength: 8, maxLength: 255 }
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema: { type: string }
+    Status:
+      name: status
+      in: query
+      required: false
+      schema: { type: string }
+  responses:
+    Unauthorized:
+      description: Unauthorized
+    NotFound:
+      description: Not found
+    Conflict:
+      description: Conflict or invalid concurrent state
+    ValidationError:
+      description: Validation error
+    RateLimited:
+      description: Rate limited
+  schemas:
+    LoginRequest:
+      type: object
+      required: [identifier, password]
+      properties:
+        identifier: { type: string }
+        password: { type: string, format: password }
+    AuthResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            user: { $ref: '#/components/schemas/User' }
+            token: { type: string }
+    UserResponse:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/User' }
+    User:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        name: { type: string }
+        status: { type: string }
+        roles:
+          type: array
+          items: { type: string }
+    GeoAddressInput:
+      type: object
+      required: [address, latitude, longitude]
+      properties:
+        address: { type: string }
+        latitude: { type: number, format: double, minimum: -90, maximum: 90 }
+        longitude: { type: number, format: double, minimum: -180, maximum: 180 }
+        reference: { type: string, nullable: true }
+    RecipientInput:
+      type: object
+      required: [name, phone]
+      properties:
+        name: { type: string }
+        phone: { type: string }
+    DeliveryItemInput:
+      type: object
+      required: [name, quantity]
+      properties:
+        name: { type: string }
+        category: { type: string }
+        quantity: { type: integer, minimum: 1 }
+        approximate_weight: { type: number, format: double, nullable: true }
+        notes: { type: string, nullable: true }
+    PricingInput:
+      type: object
+      required: [mode]
+      properties:
+        mode:
+          type: string
+          enum: [CALCULATED, MERCHANT_DEFINED]
+        amount:
+          type: string
+          nullable: true
+        currency:
+          type: string
+          default: BRL
+    CreateDeliveryRequest:
+      type: object
+      required: [origin, destination, recipient, items, pricing]
+      properties:
+        origin: { $ref: '#/components/schemas/GeoAddressInput' }
+        destination: { $ref: '#/components/schemas/GeoAddressInput' }
+        recipient: { $ref: '#/components/schemas/RecipientInput' }
+        items:
+          type: array
+          minItems: 1
+          items: { $ref: '#/components/schemas/DeliveryItemInput' }
+        pricing: { $ref: '#/components/schemas/PricingInput' }
+        pickup_deadline: { type: string, format: date-time, nullable: true }
+    UpdateDeliveryRequest:
+      type: object
+      properties:
+        recipient: { $ref: '#/components/schemas/RecipientInput' }
+        destination: { $ref: '#/components/schemas/GeoAddressInput' }
+        items:
+          type: array
+          items: { $ref: '#/components/schemas/DeliveryItemInput' }
+        pickup_deadline: { type: string, format: date-time, nullable: true }
+    CancelDeliveryRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string }
+        description: { type: string, nullable: true }
+    CounterOfferRequest:
+      type: object
+      required: [amount, currency]
+      properties:
+        amount: { type: string }
+        currency: { type: string, default: BRL }
+        message: { type: string, nullable: true }
+    CompleteDeliveryRequest:
+      type: object
+      required: [recipient_name, evidence_ids]
+      properties:
+        recipient_name: { type: string }
+        evidence_ids:
+          type: array
+          minItems: 1
+          items: { type: string, format: uuid }
+        notes: { type: string, nullable: true }
+    FailDeliveryRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason: { type: string }
+        description: { type: string, nullable: true }
+        evidence_ids:
+          type: array
+          items: { type: string, format: uuid }
+    Delivery:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        status: { type: string }
+        pricing_mode: { type: string }
+        suggested_amount: { type: string, nullable: true }
+        merchant_offered_amount: { type: string, nullable: true }
+        accepted_amount: { type: string, nullable: true }
+        currency: { type: string }
+        pickup_deadline: { type: string, format: date-time, nullable: true }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+    DeliveryResponse:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/Delivery' }
+    DeliveryCollectionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/Delivery' }
+        meta:
+          type: object
+    CounterOffer:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        delivery_id: { type: string, format: uuid }
+        driver_id: { type: string, format: uuid }
+        amount: { type: string }
+        currency: { type: string }
+        status: { type: string }
+        message: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+    CounterOfferResponse:
+      type: object
+      properties:
+        data: { $ref: '#/components/schemas/CounterOffer' }
+    CounterOfferCollectionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items: { $ref: '#/components/schemas/CounterOffer' }
+        meta: { type: object }
+    LocationPoint:
+      type: object
+      required: [latitude, longitude, recorded_at, client_event_id]
+      properties:
+        latitude: { type: number, format: double }
+        longitude: { type: number, format: double }
+        accuracy: { type: number, format: double, nullable: true }
+        speed: { type: number, format: double, nullable: true }
+        heading: { type: number, format: double, nullable: true }
+        recorded_at: { type: string, format: date-time }
+        client_event_id: { type: string }
+    EvidenceRequest:
+      type: object
+      required: [type, file_id]
+      properties:
+        type: { type: string }
+        file_id: { type: string, format: uuid }
+        captured_at: { type: string, format: date-time }
+        latitude: { type: number, format: double, nullable: true }
+        longitude: { type: number, format: double, nullable: true }
+    EvidenceResponse:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            id: { type: string, format: uuid }
+            type: { type: string }
+            file_id: { type: string, format: uuid }
+    SyncOperation:
+      type: object
+      required: [operation_id, entity_type, entity_id, operation_type, client_created_at]
+      properties:
+        operation_id: { type: string }
+        entity_type: { type: string }
+        entity_id: { type: string }
+        operation_type: { type: string }
+        client_created_at: { type: string, format: date-time }
+        client_sequence: { type: integer, nullable: true }
+        payload: { type: object }
+    SyncBatchRequest:
+      type: object
+      required: [device_id, operations]
+      properties:
+        device_id: { type: string }
+        operations:
+          type: array
+          items: { $ref: '#/components/schemas/SyncOperation' }
+    SyncBatchResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              operation_id: { type: string }
+              status: { type: string }
+              server_entity_version: { type: integer, nullable: true }
+              server_timestamp: { type: string, format: date-time }

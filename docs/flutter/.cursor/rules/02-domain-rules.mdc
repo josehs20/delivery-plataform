@@ -1,0 +1,15 @@
+---
+description: "Apply Flutter-facing delivery-domain rules when implementing delivery screens, offer/counter-offer flows, cancellations, return flows, proof of delivery, and multi-delivery driver behavior."
+---
+
+# Flutter Domain Behavior Rules
+
+- Always render delivery state from authoritative server/local synchronized state, not ad hoc UI flags.
+- Respect the documented delivery state machine.
+- Do not let a screen call an arbitrary status update endpoint without a valid business command.
+- Display the offer/counter-offer history accurately.
+- Counter-offer submission is allowed only while the negotiation remains open.
+- A driver may have multiple active deliveries; the UI must not model a single-current-delivery assumption globally.
+- After pickup, cancellation/return workflows must be visibly distinct from ordinary cancellation.
+- Completion requires configured proof-of-delivery information.
+- Failed delivery requires a reason and evidence according to business rules.

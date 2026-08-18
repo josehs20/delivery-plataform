@@ -1,0 +1,15 @@
+---
+globs: "**/*.dart"
+alwaysApply: false
+---
+
+# Flutter Code Quality
+
+- Keep business rules out of widgets.
+- Do not duplicate API contracts in multiple places.
+- Prefer explicit models and mappers over dynamic JSON manipulation throughout the app.
+- Remove dead code and unused dependencies.
+- Keep comments focused on non-obvious decisions and invariants.
+- Update `/flutter/docs/**` when architecture or behavior changes materially.
+- New features must include the necessary loading/error/offline/sync states.
+- Do not bypass analyzer/test failures to complete a feature.

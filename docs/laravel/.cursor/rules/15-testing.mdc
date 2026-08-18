@@ -1,0 +1,17 @@
+---
+globs: "**/tests/**/*.php,**/*Test.php,**/test*.php"
+alwaysApply: false
+---
+
+# Laravel Testing Rules
+
+- Every business-critical rule must have automated coverage.
+- Prefer feature/application tests for use cases and state transitions, plus focused unit tests for pure domain logic.
+- Test both happy paths and rejected transitions.
+- Explicitly test acceptance races/concurrency where practical.
+- Test duplicate/idempotent commands.
+- Test authorization boundaries for commerce, driver, and admin.
+- Test refunds and payout eligibility without relying on live payment providers.
+- Use fakes/mocks for external providers and add contract/integration tests where valuable.
+- Test offline sync endpoints with duplicated, stale, unauthorized, and conflicting events.
+- Test API response/error contracts.

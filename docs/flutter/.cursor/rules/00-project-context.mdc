@@ -1,0 +1,27 @@
+---
+alwaysApply: true
+---
+
+# Flutter Project Context and Source of Truth
+
+## Mandatory context
+- Treat `/docs/**` as the canonical product/business source of truth.
+- Treat `/flutter/docs/**` as the canonical Flutter technical specification.
+- Read the relevant shared and Flutter documents before implementing a feature.
+- Never invent business rules, financial rules, delivery states, permissions, or workflow behavior.
+- When a requirement is marked pending, do not silently choose a definitive behavior.
+
+## Client/server boundary
+- Flutter is a client and local operational cache, not the authoritative source for financial or critical delivery state.
+- Laravel is authoritative for authentication, authorization, final pricing, delivery state, negotiation, payments, refunds, payouts, and sync acceptance.
+- Flutter may provide UX validation but MUST never be the only validation for critical business rules.
+
+## Offline principle
+- The driver app is offline-first for an active delivery.
+- Local persistence is mandatory before acknowledging a critical offline action as safely recorded.
+- The commerce app MUST NOT create a brand-new server offer while offline in the MVP.
+
+## Domain principles
+- A driver may have multiple active deliveries.
+- Each delivery retains its own lifecycle and evidence.
+- Do not implement future route optimization in MVP unless explicitly requested.

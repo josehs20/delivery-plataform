@@ -1,0 +1,12 @@
+---
+description: Offline synchronization API rules
+alwaysApply: true
+---
+# Sync API Rules
+
+- Offline commands MUST be persisted locally before upload.
+- Every sync operation MUST have a stable operation_id.
+- Retry MUST not create duplicate server effects.
+- Sync conflicts MUST be represented explicitly in UI/state.
+- Server timestamps and server state take precedence over client timestamps/state.
+- Batch synchronization MUST tolerate partial success.
