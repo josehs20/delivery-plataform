@@ -8,6 +8,13 @@ import '../../core/network/dio_api_client.dart';
 import '../../core/storage/local_database.dart';
 import '../../core/sync/sync_service.dart';
 import '../../core/sync/sync_worker.dart';
+import '../../features/admin/data/admin_remote_data_source.dart';
+import '../../features/admin/data/admin_repository_impl.dart';
+import '../../features/admin/presentation/cubits/admin_audit_logs_cubit.dart';
+import '../../features/admin/presentation/cubits/admin_dashboard_cubit.dart';
+import '../../features/admin/presentation/cubits/admin_deliveries_cubit.dart';
+import '../../features/admin/presentation/cubits/admin_drivers_cubit.dart';
+import '../../features/admin/presentation/cubits/admin_financial_cubit.dart';
 import '../../features/auth/data/auth_remote_data_source.dart';
 import '../../features/auth/data/auth_repository_impl.dart';
 import '../../features/auth/presentation/auth_cubit.dart';
@@ -34,6 +41,11 @@ final class AppDependencies {
     required this.createDeliveryCubit,
     required this.trackingCubit,
     required this.profileCubit,
+    required this.adminDashboardCubit,
+    required this.adminDriversCubit,
+    required this.adminDeliveriesCubit,
+    required this.adminFinancialCubit,
+    required this.adminAuditLogsCubit,
     required this.syncService,
   });
 
@@ -52,6 +64,13 @@ final class AppDependencies {
   final CreateDeliveryCubit createDeliveryCubit;
   final TrackingCubit trackingCubit;
   final ProfileCubit profileCubit;
+
+  // Painel administrativo (`features/admin`).
+  final AdminDashboardCubit adminDashboardCubit;
+  final AdminDriversCubit adminDriversCubit;
+  final AdminDeliveriesCubit adminDeliveriesCubit;
+  final AdminFinancialCubit adminFinancialCubit;
+  final AdminAuditLogsCubit adminAuditLogsCubit;
 
   /// Facade do motor de sincronização (fila offline → `/sync`).
   final SyncService syncService;
@@ -147,6 +166,16 @@ abstract final class AppBootstrap {
       ),
     );
 
+    // 8. Painel administrativo (API `/admin/*`).
+    final adminRepository = AdminRepositoryImpl(
+      AdminRemoteDataSourceImpl(http),
+    );
+    final adminDashboardCubit = AdminDashboardCubit(adminRepository);
+    final adminDriversCubit = AdminDriversCubit(adminRepository);
+    final adminDeliveriesCubit = AdminDeliveriesCubit(adminRepository);
+    final adminFinancialCubit = AdminFinancialCubit(adminRepository);
+    final adminAuditLogsCubit = AdminAuditLogsCubit(adminRepository);
+
     return AppDependencies(
       localDatabase: database,
       tokenStore: tokens,
@@ -157,6 +186,11 @@ abstract final class AppBootstrap {
       createDeliveryCubit: createDeliveryCubit,
       trackingCubit: trackingCubit,
       profileCubit: profileCubit,
+      adminDashboardCubit: adminDashboardCubit,
+      adminDriversCubit: adminDriversCubit,
+      adminDeliveriesCubit: adminDeliveriesCubit,
+      adminFinancialCubit: adminFinancialCubit,
+      adminAuditLogsCubit: adminAuditLogsCubit,
       syncService: syncService,
     );
   }

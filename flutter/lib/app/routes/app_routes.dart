@@ -13,6 +13,9 @@ abstract final class AppRoutes {
   /// Dashboard do motoboy (`features/driver`).
   static const driverDashboard = '/driver';
 
+  /// Tela dedicada ao papel `admin` (`features/admin`).
+  static const adminDashboard = '/admin';
+
   /// Criação de nova entrega (comércio).
   static const createDelivery = '/business/deliveries/new';
 
@@ -81,12 +84,14 @@ abstract final class AppRoutes {
   /// O Laravel é a autoridade dos papéis; esta rota apenas direciona a UI:
   /// - business → `/business`;
   /// - driver → `/driver`;
-  /// - admin → feed de entregas (o backend expõe a listagem de todas as
-  ///   entregas para admin em `GET /deliveries`).
+  /// - admin → `/admin` (tela dedicada de administração — o app móvel não tem
+  ///   feed operacional para essa role; a gestão completa é no painel web).
   static String dashboardForRole(String role) {
     return switch (role) {
       'business' => businessDashboard,
       'driver' => driverDashboard,
+      'admin' => adminDashboard,
+      // Papel não reconhecido: mantém o comportamento genérico anterior.
       _ => feed,
     };
   }

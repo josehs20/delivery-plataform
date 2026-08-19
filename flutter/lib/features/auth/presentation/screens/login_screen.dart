@@ -30,6 +30,25 @@ class _LoginScreenState extends State<LoginScreen> {
   static final _phonePattern = RegExp(r'^\+?[0-9]{10,15}$');
 
   @override
+  void initState() {
+    super.initState();
+    // Guarda de rota: se o usuário já está autenticado e navegou manualmente
+    // para `/login` (ex.: botão "Voltar" do navegador a partir do painel do
+    // admin), redireciona para o dashboard da role em vez de mostrar o
+    // formulário — evita ficar preso na tela de login.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final state = context.read<AuthCubit>().state;
+      if (state is AuthAuthenticated) {
+        Navigator.of(context).pushReplacementNamed(
+          widget.redirectRoute ??
+              AppRoutes.dashboardForRole(state.session.user.primaryRole),
+        );
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _identifierController.dispose();
     _passwordController.dispose();

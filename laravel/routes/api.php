@@ -1,14 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\{
-    AuthController,
-    MeController,
-    DeliveryController,
-    SyncController,
-};
+use App\Http\Controllers\Api\V1\AdminController;
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DeliveryController;
+use App\Http\Controllers\Api\V1\MeController;
+use App\Http\Controllers\Api\V1\SyncController;
 use App\Http\Requests\Api\V1\DeliveryStateTransitionRequest;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +60,13 @@ Route::prefix('v1')->middleware('api')->group(function () {
     // ================================================================
     Route::middleware('auth:sanctum')->group(function () {
         // ================================================================
+        // Authentication — Logout (protected: requires a valid token)
+        // ================================================================
+        // Revokes the current Sanctum token (docs/api/30-auth-api.md).
+        Route::post('auth/logout', [AuthController::class, 'logout'])
+            ->name('auth.logout');
+
+        // ================================================================
         // Profile Endpoints
         // ================================================================
         // Per docs/api/30-auth-api.md: GET /api/v1/me returns user identity
@@ -111,34 +116,28 @@ Route::prefix('v1')->middleware('api')->group(function () {
                     ->name('deliveries.accept');
 
                 // Driver state transitions
-                Route::post('arrive-pickup', fn (DeliveryStateTransitionRequest $request, string $id) =>
-                    app(DeliveryController::class)->transitionState($request, $id, 'arrive-pickup')
+                Route::post('arrive-pickup', fn (DeliveryStateTransitionRequest $request, string $id) => app(DeliveryController::class)->transitionState($request, $id, 'arrive-pickup')
                 )->middleware(['can:transition-delivery', 'idempotency-key'])
                     ->name('deliveries.arrive-pickup');
 
-                Route::post('pickup', fn (DeliveryStateTransitionRequest $request, string $id) =>
-                    app(DeliveryController::class)->transitionState($request, $id, 'pickup')
+                Route::post('pickup', fn (DeliveryStateTransitionRequest $request, string $id) => app(DeliveryController::class)->transitionState($request, $id, 'pickup')
                 )->middleware(['can:transition-delivery', 'idempotency-key'])
                     ->name('deliveries.pickup');
 
-                Route::post('arrive-destination', fn (DeliveryStateTransitionRequest $request, string $id) =>
-                    app(DeliveryController::class)->transitionState($request, $id, 'arrive-destination')
+                Route::post('arrive-destination', fn (DeliveryStateTransitionRequest $request, string $id) => app(DeliveryController::class)->transitionState($request, $id, 'arrive-destination')
                 )->middleware(['can:transition-delivery', 'idempotency-key'])
                     ->name('deliveries.arrive-destination');
 
-                Route::post('complete', fn (DeliveryStateTransitionRequest $request, string $id) =>
-                    app(DeliveryController::class)->transitionState($request, $id, 'complete')
+                Route::post('complete', fn (DeliveryStateTransitionRequest $request, string $id) => app(DeliveryController::class)->transitionState($request, $id, 'complete')
                 )->middleware(['can:transition-delivery', 'idempotency-key'])
                     ->name('deliveries.complete');
 
-                Route::post('fail', fn (DeliveryStateTransitionRequest $request, string $id) =>
-                    app(DeliveryController::class)->transitionState($request, $id, 'fail')
+                Route::post('fail', fn (DeliveryStateTransitionRequest $request, string $id) => app(DeliveryController::class)->transitionState($request, $id, 'fail')
                 )->middleware(['can:transition-delivery', 'idempotency-key'])
                     ->name('deliveries.fail');
 
                 // Return flow (driver starts, business confirms)
-                Route::post('return/start', fn (DeliveryStateTransitionRequest $request, string $id) =>
-                    app(DeliveryController::class)->transitionState($request, $id, 'return-start')
+                Route::post('return/start', fn (DeliveryStateTransitionRequest $request, string $id) => app(DeliveryController::class)->transitionState($request, $id, 'return-start')
                 )->middleware(['can:transition-delivery', 'idempotency-key'])
                     ->name('deliveries.return.start');
 
@@ -162,6 +161,48 @@ Route::prefix('v1')->middleware('api')->group(function () {
         Route::post('sync', [SyncController::class, 'sync'])
             ->middleware('idempotency-key')
             ->name('sync.operations');
+
+        // ================================================================
+        // Admin Panel (docs/docs/api/41-admin-api.md)
+        // ================================================================
+        // Protected by auth:sanctum + can:access-admin (role 'admin').
+        Route::prefix('admin')->middleware('can:access-admin')->group(function () {
+            // Dashboard metrics (cards do painel administrativo).
+            Route::get('metrics', [AdminController::class, 'metrics'])
+                ->name('admin.metrics');
+
+            // Motoboys — aprovação cadastral.
+            Route::get('drivers/pending', [AdminController::class, 'pendingDrivers'])
+                ->name('admin.drivers.pending');
+            Route::post('drivers/{driver}/approve', [AdminController::class, 'approveDriver'])
+                ->name('admin.drivers.approve');
+            Route::post('drivers/{driver}/reject', [AdminController::class, 'rejectDriver'])
+                ->name('admin.drivers.reject');
+            Route::post('drivers/{driver}/suspend', [AdminController::class, 'suspendDriver'])
+                ->name('admin.drivers.suspend');
+
+            // Torre de controle de entregas.
+            Route::get('deliveries', [AdminController::class, 'deliveries'])
+                ->name('admin.deliveries');
+            Route::post('deliveries/{delivery}/assign', [AdminController::class, 'assignDelivery'])
+                ->name('admin.deliveries.assign');
+            Route::post('deliveries/{delivery}/cancel', [AdminController::class, 'cancelDelivery'])
+                ->name('admin.deliveries.cancel');
+
+            // Financeiro, reembolsos e repasses.
+            Route::get('payments', [AdminController::class, 'payments'])
+                ->name('admin.payments');
+            Route::get('refunds', [AdminController::class, 'listRefunds'])
+                ->name('admin.refunds');
+            Route::post('refunds', [AdminController::class, 'createRefund'])
+                ->name('admin.refunds.store');
+            Route::get('payouts', [AdminController::class, 'payouts'])
+                ->name('admin.payouts');
+
+            // Auditoria.
+            Route::get('audit-logs', [AdminController::class, 'auditLogs'])
+                ->name('admin.audit-logs');
+        });
     });
 });
 

@@ -195,4 +195,33 @@ void main() {
 
     expect(find.text('Dashboard'), findsOneWidget);
   });
+
+  testWidgets(
+      'when already authenticated, the login screen redirects to the role '
+      'dashboard instead of showing the form', (tester) async {
+    final cubit = AuthCubit(_FakeAuthRepository(session: _session));
+    addTearDown(cubit.close);
+
+    // Sessão ativa antes de montar (ex.: voltou do dashboard para `/login`).
+    await cubit.login(identifier: 'joao@example.com', password: 'password123');
+
+    await tester.pumpWidget(
+      BlocProvider.value(
+        value: cubit,
+        child: MaterialApp(
+          initialRoute: AppRoutes.login,
+          routes: {
+            AppRoutes.login: (_) => const LoginScreen(),
+            AppRoutes.businessDashboard: (_) => const _DashboardScreen(),
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Não fica preso no formulário: vai direto para o dashboard da role.
+    expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('Entrar'), findsNothing);
+  });
 }

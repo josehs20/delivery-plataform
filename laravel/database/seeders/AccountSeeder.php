@@ -14,12 +14,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 /**
- * Contas de teste para o teste manual do app/API, cobrindo os três atores
- * (docs/docs/product/02-actors-and-permissions.md):
+ * Contas de demonstração para o ambiente local de desenvolvimento.
  *
- * - admin:   `admin@example.com`   / `password` (papel `admin` — operação da plataforma);
- * - comércio:`test@example.com`    / `password` (papel `business` + estabelecimento);
- * - motoboy: `driver@example.com`  / `password` (papel `driver` + veículo aprovado).
+ * Cobertura dos atores (docs/docs/product/02-actors-and-permissions.md):
+ *
+ * - comércio: `test@example.com`   / `password` (papel `business` + estabelecimento);
+ * - motoboy:  `driver@example.com` / `password` (papel `driver` + veículo aprovado).
+ *
+ * O usuário administrador essencial é criado por `AdminUserSeeder`
+ * (rodado pelo `DatabaseSeeder` e pelo `DevelopmentSeeder`).
  *
  * Idempotente (firstOrCreate) e sem depender do evento `creating` para gerar a
  * chave primária (IDs explícitos), evitando o erro
@@ -29,8 +32,6 @@ class AccountSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->seedAdmin();
-
         $businessUser = $this->ensureUser(
             email: 'test@example.com',
             name: 'Test Business',
@@ -73,17 +74,6 @@ class AccountSeeder extends Seeder
             ['driver_id' => $driver->id],
             ['vehicle_type' => 'MOTORCYCLE', 'plate' => 'ABC1D23', 'status' => 'ACTIVE'],
         );
-    }
-
-    private function seedAdmin(): void
-    {
-        $admin = $this->ensureUser(
-            email: 'admin@example.com',
-            name: 'Admin do Sistema',
-            phone: '+5531999990000',
-        );
-
-        $admin->assignRole('admin');
     }
 
     private function ensureUser(string $email, string $name, string $phone): User

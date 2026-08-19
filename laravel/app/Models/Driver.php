@@ -27,6 +27,7 @@ class Driver extends Model
         'operational_status',
         'last_online_at',
         'approved_at',
+        'rejection_reason',
     ];
 
     protected $casts = [

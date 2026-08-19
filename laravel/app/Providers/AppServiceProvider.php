@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Delivery;
 use App\Models\User;
+use App\Policies\AdminPolicy;
 use App\Policies\DeliveryPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -32,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('accept-delivery', fn (User $user): bool => $user->hasRole('driver'));
         Gate::define('transition-delivery', fn (User $user): bool => $user->hasRole('driver'));
         Gate::define('cancel-delivery', fn (User $user): bool => $user->hasRole('business'));
+
+        // Admin panel: all /admin/* routes are protected by this gate (docs/api/41-admin-api.md).
+        Gate::define('access-admin', fn (User $user): bool => app(AdminPolicy::class)->access($user));
     }
 }

@@ -34,6 +34,11 @@ class _AppState extends State<App> {
         BlocProvider.value(value: dependencies.createDeliveryCubit),
         BlocProvider.value(value: dependencies.trackingCubit),
         BlocProvider.value(value: dependencies.profileCubit),
+        BlocProvider.value(value: dependencies.adminDashboardCubit),
+        BlocProvider.value(value: dependencies.adminDriversCubit),
+        BlocProvider.value(value: dependencies.adminDeliveriesCubit),
+        BlocProvider.value(value: dependencies.adminFinancialCubit),
+        BlocProvider.value(value: dependencies.adminAuditLogsCubit),
       ],
       child: MaterialApp(
         title: 'Delivery App',

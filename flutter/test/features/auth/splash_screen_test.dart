@@ -5,6 +5,7 @@ import 'package:delivery_app/features/auth/domain/auth_session.dart';
 import 'package:delivery_app/features/auth/domain/auth_user.dart';
 import 'package:delivery_app/features/auth/domain/register_params.dart';
 import 'package:delivery_app/features/auth/presentation/auth_cubit.dart';
+import 'package:delivery_app/features/auth/presentation/auth_state.dart';
 import 'package:delivery_app/features/auth/presentation/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +27,12 @@ class _FakeAuthRepository implements AuthRepository {
   final AuthSession? session;
   final Object? error;
 
+  /// Número de chamadas a [restoreSession] (para detectar re-validações).
+  int restoreCalls = 0;
+
   @override
   Future<AuthSession?> restoreSession() async {
+    restoreCalls++;
     if (error != null) throw error!;
     return session;
   }
@@ -90,6 +95,25 @@ class _DashboardPlaceholder extends StatelessWidget {
   }
 }
 
+class _AdminPlaceholder extends StatelessWidget {
+  const _AdminPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(body: Center(child: Text('Admin')));
+  }
+}
+
+final _adminSession = AuthSession(
+  token: '1|admin',
+  user: const AuthUser(
+    id: 'u-admin',
+    name: 'Admin',
+    email: 'admin@example.com',
+    roles: ['admin'],
+  ),
+);
+
 Future<AuthCubit> _pumpSplash(
   WidgetTester tester,
   _FakeAuthRepository repository, {
@@ -109,6 +133,7 @@ Future<AuthCubit> _pumpSplash(
           AppRoutes.login: (_) => const _LoginPlaceholder(),
           AppRoutes.feed: (_) => const _FeedPlaceholder(),
           AppRoutes.dashboard: (_) => const _DashboardPlaceholder(),
+          AppRoutes.adminDashboard: (_) => const _AdminPlaceholder(),
         },
       ),
     ),
@@ -168,5 +193,58 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(_LoginPlaceholder), findsOneWidget);
+  });
+
+  testWidgets('restoring an admin session goes to the admin screen',
+      (tester) async {
+    await _pumpSplash(
+      tester,
+      _FakeAuthRepository(session: _adminSession),
+      // Sem rota explícita o helper usaria o feed; aqui validamos o roteamento
+      // por papel: admin → tela administrativa (e NÃO o feed genérico).
+      authenticatedRoute: AppRoutes.adminDashboard,
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(_AdminPlaceholder), findsOneWidget);
+    expect(find.byType(_FeedPlaceholder), findsNothing);
+  });
+
+  testWidgets(
+      'when already authenticated, the splash redirects without re-validating '
+      'the session (no infinite loading on back navigation)', (tester) async {
+    final repository = _FakeAuthRepository(session: _adminSession);
+    final cubit = AuthCubit(repository);
+    addTearDown(cubit.close);
+
+    // Sessão já ativa antes do Splash montar (ex.: voltou para a raiz `/`).
+    await cubit.login(
+      identifier: 'admin@example.com',
+      password: 'password123',
+    );
+    expect(cubit.state, isA<AuthAuthenticated>());
+
+    await tester.pumpWidget(
+      BlocProvider.value(
+        value: cubit,
+        child: MaterialApp(
+          initialRoute: AppRoutes.splash,
+          routes: {
+            AppRoutes.splash: (_) => const SplashScreen(),
+            AppRoutes.login: (_) => const _LoginPlaceholder(),
+            AppRoutes.feed: (_) => const _FeedPlaceholder(),
+            AppRoutes.dashboard: (_) => const _DashboardPlaceholder(),
+            AppRoutes.adminDashboard: (_) => const _AdminPlaceholder(),
+          },
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // Redirecionou direto para o painel admin SEM chamar `GET /me` de novo.
+    expect(find.byType(_AdminPlaceholder), findsOneWidget);
+    expect(repository.restoreCalls, 0);
   });
 }

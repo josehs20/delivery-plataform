@@ -28,7 +28,23 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     // Dispara a restauração após o primeiro frame (contexto/bloc prontos).
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<AuthCubit>().restoreSession();
+      if (!mounted) return;
+      final cubit = context.read<AuthCubit>();
+      final state = cubit.state;
+
+      // Guarda contra "loading infinito": se a sessão já está ativa (ex.: o
+      // usuário voltou para a raiz `/` pelo navegador/dispositivo), não chama
+      // `GET /me` de novo nem exibe o spinner — apenas redireciona para o
+      // dashboard correto da role (admin → /admin).
+      if (state is AuthAuthenticated) {
+        Navigator.of(context).pushReplacementNamed(
+          widget.authenticatedRoute ??
+              AppRoutes.dashboardForRole(state.session.user.primaryRole),
+        );
+        return;
+      }
+
+      cubit.restoreSession();
     });
   }
 

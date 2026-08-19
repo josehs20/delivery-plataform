@@ -1,6 +1,7 @@
 import 'package:delivery_app/app/pages/delivery_dashboard_screen.dart';
 import 'package:delivery_app/app/routes.dart';
 import 'package:delivery_app/app/routes/app_routes.dart';
+import 'package:delivery_app/features/admin/presentation/screens/admin_dashboard_screen.dart';
 import 'package:delivery_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:delivery_app/features/auth/presentation/screens/register_screen.dart';
 import 'package:delivery_app/features/auth/presentation/screens/splash_screen.dart';
@@ -23,6 +24,7 @@ void main() {
     expect(appRoutes[AppRoutes.feed], isNotNull);
     expect(appRoutes[AppRoutes.businessDashboard], isNotNull);
     expect(appRoutes[AppRoutes.driverDashboard], isNotNull);
+    expect(appRoutes[AppRoutes.adminDashboard], isNotNull);
     expect(appRoutes[AppRoutes.createDelivery], isNotNull);
     expect(appRoutes[AppRoutes.profile], isNotNull);
   });
@@ -104,6 +106,8 @@ void main() {
         isA<BusinessDashboardScreen>());
     expect(appRoutes[AppRoutes.driverDashboard]!(context),
         isA<DriverDashboardScreen>());
+    expect(appRoutes[AppRoutes.adminDashboard]!(context),
+        isA<AdminDashboardScreen>());
     expect(appRoutes[AppRoutes.createDelivery]!(context),
         isA<CreateDeliveryScreen>());
     expect(appRoutes[AppRoutes.profile]!(context), isA<ProfileScreen>());
@@ -149,7 +153,8 @@ void main() {
   test('dashboardForRole resolves the correct dashboard per role', () {
     expect(AppRoutes.dashboardForRole('business'), '/business');
     expect(AppRoutes.dashboardForRole('driver'), '/driver');
-    expect(AppRoutes.dashboardForRole('admin'), AppRoutes.feed);
+    // Admin NÃO vai para o feed genérico de entregas — vai para a tela dedicada.
+    expect(AppRoutes.dashboardForRole('admin'), AppRoutes.adminDashboard);
     expect(AppRoutes.dashboardForRole('unknown'), AppRoutes.feed);
   });
 }

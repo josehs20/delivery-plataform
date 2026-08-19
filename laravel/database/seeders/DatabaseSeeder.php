@@ -7,17 +7,21 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 
 /**
- * Seeder raiz do ambiente de desenvolvimento.
+ * Seeder raiz — apenas o ESSENCIAL para a aplicação iniciar em produção ou
+ * homologação (dados estruturais, idempotentes e sem massa fake):
  *
- * 1. AccountSeeder      — contas dos três atores (admin, comércio, motoboy);
- * 2. DeliveryFlowSeeder — entregas de exemplo em cada estágio da máquina de
- *                         estados, para o teste manual do app/API.
+ * 1. RolePermissionSeeder — papéis (admin, business, driver) e permissões;
+ * 2. AdminUserSeeder      — usuário administrador de sistema.
+ *
+ * Dados de demonstração (contas comércio/motoboy + entregas de exemplo) NÃO
+ * ficam aqui: rode `php artisan db:seed --class=DevelopmentSeeder` em ambiente
+ * local quando precisar preencher telas/dashboards.
  */
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        $this->call(AccountSeeder::class);
-        $this->call(DeliveryFlowSeeder::class);
+        $this->call(RolePermissionSeeder::class);
+        $this->call(AdminUserSeeder::class);
     }
 }

@@ -279,8 +279,8 @@ class DeliveryFlowSeeder extends Seeder
      * (DRIVER_ACCEPTED → DELIVERED), com oferta ACCEPTED, atribuição ACTIVE e
      * trilha de eventos coerente com a máquina de estados.
      *
-     * @param array<string, mixed> $recipient
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<string, mixed>  $recipient
+     * @param  array<int, array<string, mixed>>  $items
      */
     private function createAcceptedDelivery(
         Business $business,
@@ -341,8 +341,8 @@ class DeliveryFlowSeeder extends Seeder
     }
 
     /**
-     * @param array<string, mixed> $recipient
-     * @param array<int, array<string, mixed>> $items
+     * @param  array<string, mixed>  $recipient
+     * @param  array<int, array<string, mixed>>  $items
      */
     private function createDelivery(
         Business $business,
@@ -424,7 +424,7 @@ class DeliveryFlowSeeder extends Seeder
     }
 
     /**
-     * @param array<string, mixed> $metadata
+     * @param  array<string, mixed>  $metadata
      */
     private function addEvent(Delivery $delivery, string $eventType, string $actorType, string $actorId, array $metadata = []): void
     {

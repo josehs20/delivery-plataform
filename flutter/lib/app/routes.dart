@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../features/admin/presentation/screens/admin_dashboard_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/auth/presentation/screens/splash_screen.dart';
@@ -27,6 +28,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.feed: (_) => const DeliveryDashboardScreen(),
   AppRoutes.businessDashboard: (_) => const BusinessDashboardScreen(),
   AppRoutes.driverDashboard: (_) => const DriverDashboardScreen(),
+  AppRoutes.adminDashboard: (_) => const AdminDashboardScreen(),
   AppRoutes.createDelivery: (_) => const CreateDeliveryScreen(),
   AppRoutes.profile: (_) => const ProfileScreen(),
 };

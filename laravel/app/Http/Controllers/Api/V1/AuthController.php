@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\V1\{
-    ForgotPasswordRequest,
-    LoginRequest,
-    RefreshTokenRequest,
-    RegisterRequest,
-    ResetPasswordRequest,
-};
+use App\Http\Requests\Api\V1\ForgotPasswordRequest;
+use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Requests\Api\V1\RefreshTokenRequest;
+use App\Http\Requests\Api\V1\RegisterRequest;
+use App\Http\Requests\Api\V1\ResetPasswordRequest;
 use App\Models\Business;
 use App\Models\Driver;
 use App\Models\DriverVehicle;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\{DB, Hash, Password};
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -34,7 +34,7 @@ class AuthController extends Controller
     public function login(LoginRequest $request): JsonResponse
     {
         $identifier = (string) $request->input('identifier');
-      
+
         $user = User::where('email', $identifier)
             ->orWhere('phone', $identifier)
             ->first();
@@ -157,7 +157,7 @@ class AuthController extends Controller
 
         return response()->json([
             'data' => [
-                'message' => 'Logout realizado com sucesso.',
+                'message' => 'Successfully logged out',
             ],
         ], 200);
     }
@@ -240,5 +240,4 @@ class AuthController extends Controller
             'token' => 'Token de recuperação inválido ou expirado.',
         ]);
     }
-
 }
